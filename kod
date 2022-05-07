@@ -18,7 +18,6 @@ adatok.append((k_e,sy.N(K_e.subs(adatok))))
 
 om = sy.simplify((1/k_e * 1/N * (N*N / ((B_r + s*J_r)*N*N + s*J_t))/((N*N / ((B_r + s*J_r)*N*N + s*J_t))+(1/(B_r+s*J_r)))).subs(adatok)) * u_be
 om
-
 t = sy.symbols('t')
 idot=sy.N(sy.inverse_laplace_transform(om.subs(u_be,1/s),s,t),4)
 print(idot)
@@ -34,8 +33,7 @@ om_1 = 1/k_e * 1/N * Z2 / (Z1/(k_e*k_m) + Z2) * u_be
 i_2 = k_e*k_m*Z2 / (Z1 + k_e*k_m*Z2) * (1/(N*k_m)) * M_t
 #mo
 om_2 = Z1*Z2 / (Z1+Z2*k_e*k_m) * 1/(-N*N) * M_t
-print(i_n1)
-
+print(i_1)
 
 #8. határértékszámítások(levezetés a kidolgozásban)
 ui = sy.limit((i_1/u_be).subs(adatok) * u_be, s, 0)
@@ -50,6 +48,7 @@ print('\ni(M_t)=')
 print(Mti)
 print('\nomega(M_t)=')
 print(Mtom)
+
 #11-12.feladat
 M_t_max = (i.subs(adatok) - ui.subs(adatok))/(Mti/M_t)
 M_t_max
