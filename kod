@@ -1,0 +1,55 @@
+import sympy as sy
+sy.init_printing()
+s, R, L, u_be, i_n, k_m, k_e, B_r, J_r, om_n, N, M_t, om, N, J_t = sy.symbols("s, R, L, u_be, i_n, k_m, k_e, B_r, J_r, omega_n, N, M_t, omega, N, J_t")
+adatok=[
+        (R    , 1.05),        
+        (L    , 1.3e-4),      
+        (u_be , 9),           
+        (i_n  , 2.62),        
+        (k_m  , 1.7e-2),      
+        (B_r  , 2e-6),        
+        (J_r  , 4.08e-6),     
+        (om_n , 58),          
+        (N    , 236),         
+        (J_t  , 2e-5)]        
+
+K_e=k_m
+adatok.append((k_e,sy.N(K_e.subs(adatok))))
+
+om = sy.simplify((1/k_e * 1/N * (N*N / ((B_r + s*J_r)*N*N + s*J_t))/((N*N / ((B_r + s*J_r)*N*N + s*J_t))+(1/(B_r+s*J_r)))).subs(adatok)) * u_be
+om
+
+t = sy.symbols('t')
+idot=sy.N(sy.inverse_laplace_transform(om.subs(u_be,1/s),s,t),4)
+print(idot)
+
+#4. feladat(levezetés a kidolgozásban)
+Z1 = R + s*L
+Z2 = N*N / ((B_r + s*J_r)*N*N + s*J_t)
+#ui
+i_n1 = 1/(Z1 + Z2*k_e*k_m) * u_be
+#uo
+om_1 = 1/k_e * 1/N * Z2 / (Z1/(k_e*k_m) + Z2) * u_be
+#mi
+i_n2 = k_e*k_m*Z2 / (Z1 + k_e*k_m*Z2) * (1/(N*k_m)) * M_t
+#mo
+om_2 = Z1*Z2 / (Z1+Z2*k_e*k_m) * 1/(-N*N) * M_t
+print(i_n1)
+
+
+#8. határértékszámítások(levezetés a kidolgozásban)
+i_u_0 = sy.limit((i_n1/u_be).subs(adatok) * u_be, s, 0)
+om_u_0 = sy.limit((om_1/u_be).subs(adatok) * u_be, s, 0)
+i_Mt_0 = sy.limit((i_n2/M_t).subs(adatok) * M_t,s,0)
+om_Mt_0 = sy.limit((om_2/M_t).subs(adatok) * M_t,s,0)
+print('i(u)=')
+print(i_u_0)
+print('\nomega(u)=')
+print(om_u_0)
+print('\ni(M_t)=')
+print(i_Mt_0)
+print('\nomega(M_t)=')
+print(om_Mt_0)
+#11-12.feladat
+M_t_max = (i_n.subs(adatok) - i_u_0.subs(adatok))/(i_Mt_0/M_t)
+M_t_max
